@@ -1,0 +1,35 @@
+﻿@model List<GroupDetailsViewModel>
+
+@{
+    ViewData["Title"] = "Group Details Page";
+}
+<div class="row">
+    <div class="col-12">
+        <a class="btn btn-warning" asp-controller="Transaction" asp-action="Create" asp-route-plantId="@ViewBag.PlantId" asp-route-groupId="@ViewBag.GroupId">Create Service</a>
+        <a class="btn btn-info" asp-controller="Transaction" asp-action="Details" asp-route-groupId="@ViewBag.GroupId" asp-route-plantId="@ViewBag.PlantId">List of Services</a>
+        <a class="btn btn-primary" asp-controller="Group" asp-action="ServiceLog" asp-route-id="@ViewBag.GroupId" >List of Service Logs</a>
+
+    </div>
+    <hr/>
+    <div class="col-12">
+        <table class="table table-responsive table-bordered table-striped text-deeppink" border="1">
+            <tr>
+                <th>Product</th>
+                <th>SparePart</th>
+            </tr>
+            @foreach (var groupDetails in Model)
+            {
+                <tr>
+                    @if (groupDetails.Product != null)
+                    {
+                        <td rowspan="1" id="@groupDetails.Product">
+                            @groupDetails.Product
+                        </td>
+                    }
+                    <td>@groupDetails.SparePart</td>
+                </tr>
+            }
+        </table>
+    </div>
+
+</div>

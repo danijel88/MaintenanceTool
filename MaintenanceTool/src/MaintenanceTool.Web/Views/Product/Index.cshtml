@@ -1,0 +1,34 @@
+﻿@model List<ProductViewModel>
+
+@{
+    ViewData["Title"] = "Product List";
+}
+<div class="row">
+    <div class="col-md-3">
+        <a asp-controller="Product" asp-action="Create" asp-route-companyId="@ViewBag.CompanyId" class="btn btn-info text-white">Create New Product</a>
+    </div>
+
+    <div class="col-12">
+        <table class="table table-responsive table-striped text-deeppink">
+            <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Serial Number</th>
+                <th>Model</th>
+                <th>Description</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var element in Model)
+            {
+                <tr>
+                    <td>@element.ProductName</td>
+                    <td>@element.SerialNumber</td>
+                    <td>@element.Model</td>
+                    <td>@element.Description</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

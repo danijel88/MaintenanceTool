@@ -1,0 +1,181 @@
+﻿@using MaintenanceTool.Core.InventoryAggregate
+@model CreateTransactionViewModel
+
+@{
+    ViewData["Title"] = "Create Service Page";
+}
+<div class="row">
+
+    <div class="col-12">
+        <form method="post">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="All"></div>
+            <div class="mb-3">
+                <label asp-for="CreatedDate">Date of Service</label>
+                <input class="form-control" asp-for="CreatedDate"/>
+            </div>
+            <div class="mb-3">
+                <label asp-for="DoneBy">Service Done By</label>
+                <input class="form-control" asp-for="DoneBy"/>
+            </div>
+            <div class="mb-3">
+                <label asp-for="MaintenanceType">Maintenance</label>
+                <select class="form-control" asp-for="MaintenanceType" asp-items="@Html.GetEnumSelectList<MaintenanceType>()">
+                    <option value="-1">Select Maintenance</option>
+                </select>
+            </div>
+            <div id="groupConfigContainer">
+                @for (var i = 0; i < Model.DetailTransactions.Count; i++)
+                {
+                    <div class="groupConfig">
+                    </div>
+                }
+            </div>
+            <div class="mb-3">
+                <label asp-for="Description">Description</label>
+                <textarea class="form-control" asp-for="Description"></textarea>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="addGroupConfig()">Insert</button>
+            <button type="button" onclick="saveData()" class="btn btn-success">Save</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+        function addGroupConfig() {
+            var container = document.getElementById('groupConfigContainer');
+            var index = container.children.length;
+
+            var div = document.createElement('div');
+            div.className = 'groupConfig';
+
+            var label1 = document.createElement('label');
+            label1.textContent = 'Product:';
+            div.appendChild(label1);
+
+            var select1 = document.createElement('select');
+            select1.name = 'DetailTransactions[' + index + '].ProductId';
+            select1.id = 'DetailTransactions[' + index + '].ProductId';
+            select1.required = true;
+            select1.className = 'form-control';
+            select1.setAttribute('onchange', "OnChange(event)");
+            // Add options dynamically for products
+            var option = document.createElement('option');
+            option.value = 0;
+            option.text = 'Select Product';
+            select1.appendChild(option);
+            var products = @Json.Serialize(ViewBag.Products);
+            for (var i = 0; i < products.length; i++) {
+                option = document.createElement('option');
+                option.value = products[i].value;
+                option.text = products[i].text;
+                select1.appendChild(option);
+            }
+            div.appendChild(select1);
+
+            var label2 = document.createElement('label');
+            label2.textContent = 'Spare Part:';
+            div.appendChild(label2);
+
+            var select2 = document.createElement('select');
+            select2.name = 'DetailTransactions[' + index + '].Id';
+            select2.id = 'DetailTransactions[' + index + '].Id';
+            select2.required = true;
+            select2.className = 'form-control';
+
+            div.appendChild(select2);
+
+
+            var button = document.createElement('button');
+            button.type = 'button';
+            button.textContent = 'Remove';
+            button.className = "btn btn-danger";
+            button.onclick = function () {
+                container.removeChild(div);
+            };
+
+            div.appendChild(button);
+
+            container.appendChild(div);
+        }
+
+        function OnChange(event) {
+
+            var selectElement = event.target;
+            var name = selectElement.name;
+            name = name.replace('ProductId', 'Id');
+            var sparePartElement = document.getElementById(name);
+
+            var productId = selectElement.value;
+            var groupId = @ViewBag.GroupId;
+            $.ajax({
+                type: "GET",
+                url: "/Transaction/" + groupId + "/Spares/" + productId,
+                success: function (response) {
+                    sparePartElement.length = 0;
+                    response.forEach((element) => {
+                        var option = document.createElement('option');
+                        option.value = element.groupConfigId;
+                        option.text = element.sparePartName;
+                        sparePartElement.appendChild(option);
+                    });
+
+                }
+            });
+
+
+        }
+        function saveData() {
+            var container = document.getElementById('groupConfigContainer');
+            var doneBy = document.getElementById('DoneBy');
+            var createDate = document.getElementById('CreatedDate');
+            var maintenanceType = document.getElementById('MaintenanceType');
+            var description = document.getElementById('Description');
+            var groupId = @ViewBag.GroupId;
+            var plantId = @ViewBag.PlantId;
+            // Serialize form data to JSON
+            var formData = {
+                CreatedDate: createDate.value,
+                DoneBy: doneBy.value,
+                MaintenanceType: maintenanceType.value,
+                DetailTransactions: [],
+                Description:description.value
+            };
+
+            for (var i = 0; i < container.children.length; i++) {
+                var productSelect = container.children[i].querySelector('[name$=".ProductId"]');
+                var sparePartSelect = container.children[i].querySelector('[name$=".Id"]');
+
+                formData.DetailTransactions.push({
+                    GroupConfigId: sparePartSelect.value,
+                    Quantity: 1
+                });
+            }
+
+            // Get anti-forgery token from the form
+            var token = $('input[name="__RequestVerificationToken"]').val();
+
+            // Perform AJAX post with anti-forgery token in headers
+            $.ajax({
+                url: '/Transaction/' + plantId + '/Create/' + groupId,  // Update the URL accordingly
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                headers: {
+                    'RequestVerificationToken': token
+                },
+                success: function (data) {
+                    window.location = data;
+                    // Handle success
+                },
+                error: function (error) {
+                    alert(error.statusText);
+                    // Handle error
+                }
+            });
+        }
+
+    </script>
+}

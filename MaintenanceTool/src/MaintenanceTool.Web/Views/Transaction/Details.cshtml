@@ -1,0 +1,74 @@
+﻿@model List<TransactionDetailsViewModel>
+
+@{
+    ViewData["Title"] = "Service Details";
+}
+<div class="row">
+    <div class="col-12">
+        <table class="table table-responsive table-bordered text-deeppink display" id="example" style="width:100%">
+            <thead>
+            <tr>
+                <th>Product</th>
+                <th>Spare Part</th>
+                <th>Done By</th>
+                <th>Maintenance Date</th>
+                <th>Maintenance Type</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var element in Model)
+            {
+                <tr>
+                    <td>@element.ProductDisplayedName</td>
+                    <td>@element.SparePartDisplayedName</td>
+                    <td>@element.DoneBy</td>
+                    <td>@element.CreatedDateDate</td>
+                    <td>@element.MaintenanceType</td>
+                </tr>
+            }
+            </tbody>
+            <tfoot>
+            <tr>
+                <th>Product</th>
+                <th>Spare Part</th>
+                <th>Done By</th>
+                <th>Maintenance Date</th>
+                <th>Maintenance Type</th>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+@section Scripts
+{
+    <script src="~/lib/DataTables/datatables.min.js"></script>
+    <script>
+        
+        $(document).ready(function () {
+            $('#example tfoot th').each(function () {
+                var title = $(this).text();
+                $(this).html('<input type="text" placeholder="Search ' + title + '" />');
+            });
+            var table = $('#example').DataTable({
+                dom: 'Bfrtip',
+                initComplete: function () {
+                    // Apply the search
+                    this.api().columns().every(function () {
+                        var that = this;
+                        $('input', this.footer()).on('keyup change clear',
+                            function () {
+                                if (that.search() !== this.value) {
+                                    that
+                                        .search(this.value)
+                                        .draw();
+                                }
+                            });
+                    });
+                },
+                "responsive": true,
+                "lengthChange": true,
+                "autoWidth": true
+            });
+        });
+    </script>
+}

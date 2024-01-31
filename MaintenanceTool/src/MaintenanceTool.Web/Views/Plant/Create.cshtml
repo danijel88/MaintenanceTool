@@ -1,0 +1,22 @@
+﻿@model CreatePlantViewModel
+
+@{
+    ViewData["Title"] = "Create Plant";
+}
+
+<form method="post">
+    <div asp-validation-summary="All"/>
+    <div class="mb-3">
+        <label asp-for="PlantName">Plant Name:</label>
+        <input asp-for="PlantName" class="form-control"/>
+        <span class="text-danger"> @Html.ValidationMessageFor(x => x.PlantName)</span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="CompanyId">Company:</label>
+        <select asp-for="CompanyId" class="form-control" asp-items="@ViewBag.Companies"></select>
+        <span class="text-danger"> @Html.ValidationMessageFor(x => x.CompanyId)</span>
+    </div>
+    <div class="mb-3">
+        <button class="btn btn-success" type="submit">Save</button>
+    </div>
+</form>

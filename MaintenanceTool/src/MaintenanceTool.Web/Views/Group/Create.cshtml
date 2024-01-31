@@ -1,0 +1,139 @@
+﻿@model CreateGroupViewModel
+
+@{
+    ViewData["Title"] = "Create Group Page";
+}
+<form method="post">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="All"></div>
+    <div class="mb-3">
+        <label asp-for="GroupName">System Name:</label>
+        <input asp-for="GroupName" class="form-control"/>
+        <span class="text-danger">@Html.ValidationMessageFor(x => x.GroupName)</span>
+    </div>
+    <div id="productSparePartsContainer">
+
+        @for (var i = 0; i < Model.GroupConfigs.Count; i++)
+        {
+            <div class="productSparePart">
+
+            </div>
+        }
+    </div>
+
+    <button type="button" class="btn btn-primary" onclick="addProductSparePart()">Insert</button>
+    <button type="button" onclick="saveData()" class="btn btn-success">Save</button>
+</form>
+
+@section scripts {
+    <script>
+        function addProductSparePart() {
+            var container = document.getElementById('productSparePartsContainer');
+            var index = container.children.length;
+
+            var div = document.createElement('div');
+            div.className = 'productSparePart';
+
+            var label1 = document.createElement('label');
+            label1.htmlFor = 'Model.GroupConfigs[' + index + '].ProductId';
+            label1.textContent = 'Product:';
+            div.appendChild(label1);
+
+            var select1 = document.createElement('select');
+            select1.name = 'GroupConfigs[' + index + '].ProductId';
+            select1.setAttribute('asp-for', 'GroupConfigs[' + index + '].ProductId');
+            select1.id = 'GroupConfigs[' + index + '].ProductId';
+            select1.required = true;
+            select1.className = 'form-control';
+            
+            // Add options dynamically for products
+            var products = @Json.Serialize(ViewBag.Products);
+            for (var i = 0; i < products.length; i++) {
+                var option = document.createElement('option');
+                option.value = products[i].value;
+                option.text = products[i].text;
+                select1.appendChild(option);
+            }
+            div.appendChild(select1);
+
+            var label2 = document.createElement('label');
+            label2.htmlFor = 'GroupConfigs[' + index + '].SparePartId';
+            label2.textContent = 'Spare Part:';
+            div.appendChild(label2);
+
+            var select2 = document.createElement('select');
+            select2.name = 'GroupConfigs[' + index + '].SparePartId';
+            select2.required = true;
+            select2.className = 'form-control';
+            // Add options dynamically for products
+            var spareparts = @Json.Serialize(ViewBag.SpareParts);
+            for (var i = 0; i < spareparts.length; i++) {
+                var optionSpare = document.createElement('option');
+                optionSpare.value = spareparts[i].value;
+                optionSpare.text = spareparts[i].text;
+                select2.appendChild(optionSpare);
+            }
+
+            div.appendChild(select2);
+
+            var button = document.createElement('button');
+            button.type = 'button';
+            button.textContent = 'Remove';
+            button.className = "btn btn-danger";
+            button.onclick = function () {
+                container.removeChild(div);
+            };
+
+            div.appendChild(button);
+
+            container.appendChild(div);
+        }
+
+        function removeProductSparePart(button) {
+            var container = document.getElementById('productSparePartsContainer');
+            var div = button.parentElement;
+            container.removeChild(div);
+        }
+
+        function saveData() {
+            var container = document.getElementById('productSparePartsContainer');
+
+            // Serialize form data to JSON
+            var formData = {
+                GroupName: document.getElementById('GroupName').value,
+                GroupConfigs: []
+            };
+
+            for (var i = 0; i < container.children.length; i++) {
+                var productSelect = container.children[i].querySelector('[name$=".ProductId"]');
+                var sparePartSelect = container.children[i].querySelector('[name$=".SparePartId"]');
+
+                formData.GroupConfigs.push({
+                    ProductId: productSelect.value,
+                    SparePartId: sparePartSelect.value
+                });
+            }
+            // Get anti-forgery token from the form
+            var token = $('input[name="__RequestVerificationToken"]').val();
+            var plantId = @ViewBag.PlantId;
+            // Perform AJAX post with anti-forgery token in headers
+            $.ajax({
+                url: '/Group/'+plantId+'/Create',  // Update the URL accordingly
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                headers: {
+                    'RequestVerificationToken': token
+                },
+                success: function (data) {
+                    // Handle success
+                    window.location = data;
+                },
+                error: function (error) {
+                    // Handle error
+                }
+            });
+        }
+
+    </script>
+}

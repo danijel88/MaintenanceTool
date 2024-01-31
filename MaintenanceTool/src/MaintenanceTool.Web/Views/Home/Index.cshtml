@@ -1,0 +1,63 @@
+﻿@model IList<MaintenanceTool.Core.CompanyAggregate.Company>
+@{
+    ViewData["Title"] = "MaintenanceTool Home Page";
+}
+<div class="row">
+    <div class="col-md-12">
+        <table class="table table-responsive table-striped table-bordered text-deeppink">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Products</th>
+                <th>Plants</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var element in Model)
+            {
+                <tr>
+                    <td>
+                        @element.CompanyName <br/>
+                        <a class="btn btn-primary" asp-controller="Company" asp-action="Create">Create Company</a>
+                    </td>
+                    <td>
+                        <a class="btn btn-secondary" asp-controller="Product" asp-action="Index" asp-route-companyId="@element.Id">Products</a>
+                        <a class="btn btn-info" asp-controller="SparePart" asp-action="Index" asp-route-companyId="@element.Id">Spare Parts</a>
+                    </td>
+                    <td>
+                        <table class="table table-sm table-responsive-sm table-striped">
+                            <thead>
+                            <tr>
+                                <th>Plant Name</th>
+                                <th>Systems</th>
+                                <th>Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var plant in element.Plants)
+                            {
+                                <tr>
+                                    <td>@plant.PlantName</td>
+                                    <td>
+                                        @foreach (var group in plant.Groups)
+                                        {
+                                            <a class="btn btn-link" asp-controller="Group" asp-action="Details" asp-route-id="@group.Id">@group.GroupName</a>
+                                            <br/>
+                                        }
+                                    </td>
+                                    <td>
+                                        <a asp-controller="Group" asp-action="Create" asp-route-plantId="@plant.Id" class="btn btn-link">Create System</a>
+                                    </td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+
+                        <a class="btn btn-primary" asp-controller="Plant" asp-action="Create">Create Plant</a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

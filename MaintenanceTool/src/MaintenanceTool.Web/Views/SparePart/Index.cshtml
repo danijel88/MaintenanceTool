@@ -1,0 +1,33 @@
+﻿@model IList<SparePartViewModel>
+
+@{
+    ViewData["Index"] = "Spare Part List";
+}
+
+<div class="row">
+    <div class="col-md-3">
+        <a asp-controller="SparePart" asp-action="Create" asp-route-companyId="@ViewBag.CompanyId" class="btn btn-info text-white">Create New Spare Part</a>
+    </div>
+
+    <div class="col-12">
+        <table class="table table-responsive table-striped text-deeppink">
+            <thead>
+            <tr>
+                <th>Spare Part Name</th>
+                <th>Description</th>
+                <th>SAP Code</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var element in Model)
+            {
+                <tr>
+                    <td>@element.SparePartName</td>
+                    <td>@element.Description</td>
+                    <td>@element.SapCode</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

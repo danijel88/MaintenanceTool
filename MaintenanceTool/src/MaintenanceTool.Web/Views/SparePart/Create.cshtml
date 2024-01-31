@@ -1,0 +1,27 @@
+﻿@model CreateSparePartViewModel
+
+@{
+    ViewData["Title"] = "Create Spare Part Page";
+}
+
+<form method="post">
+    <div asp-validation-summary="All"></div>
+    <div class="mb-3">
+        <label asp-for="SparePartName">Spare Part Name:</label>
+        <input class="form-control" asp-for="SparePartName"/>
+        <span class="text-danger"> @Html.ValidationMessageFor(x => x.SparePartName)</span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Description">Description:</label>
+        <input class="form-control" asp-for="Description"/>
+        <span class="text-danger"> @Html.ValidationMessageFor(x => x.Description)</span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="SapCode">Sap Code:</label>
+        <input class="form-control" asp-for="SapCode"/>
+        <span class="text-danger"> @Html.ValidationMessageFor(x => x.SapCode)</span>
+    </div>
+    <div class="mb-3">
+        <button type="submit" class="btn btn-success">Save</button>
+    </div>
+</form>

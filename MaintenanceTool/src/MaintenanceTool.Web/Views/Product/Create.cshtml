@@ -1,0 +1,31 @@
+﻿@model CreateProductViewModel
+
+@{
+    ViewData["Title"] = "Create Product Page";
+}
+
+<form method="post">
+    <div asp-validation-summary="All"/>
+    <div class="mb-3">
+        <label asp-for="ProductName">Product Name:</label>
+        <input asp-for="ProductName" class="form-control"/>
+        <span class="text-danger"> @Html.ValidationMessageFor(x => x.ProductName)</span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Model">Model:</label>
+        <input asp-for="Model" class="form-control"/>
+        <span class="text-danger"> @Html.ValidationMessageFor(x => x.Model)</span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="SerialNumber">Serial Number:</label>
+        <input asp-for="SerialNumber" class="form-control"/>
+        <span class="text-danger"> @Html.ValidationMessageFor(x => x.SerialNumber)</span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Description">Description:</label>
+        <input asp-for="Description" class="form-control"/>
+    </div>
+    <div class="mb-3">
+        <button type="submit" class="btn btn-success">Save</button>
+    </div>
+</form>

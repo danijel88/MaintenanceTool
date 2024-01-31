@@ -1,0 +1,17 @@
+﻿@model CreateCompanyViewModel
+
+@{
+    ViewData["Title"] = "Create Company";
+}
+
+<form method="post">
+    <div asp-validation-summary="All"/>
+    <div class="mb-3">
+        <label asp-for="CompanyName">Company Name:</label>
+        <input asp-for="CompanyName" class="form-control"/>
+        <span class="text-danger"> @Html.ValidationMessageFor(x => x.CompanyName)</span>
+    </div>
+    <div class="mb-3">
+        <button class="btn btn-success" type="submit">Save</button>
+    </div>
+</form>
