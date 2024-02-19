@@ -38,6 +38,9 @@
     <_ContentIncludedByDefault Remove="Views\Group\Details.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Group\ServiceLog.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Product\Create.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Product\Images.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Product\NextServices.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Product\Upload.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Transaction\Create.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Transaction\Details.cshtml" />
   </ItemGroup>
@@ -65,6 +68,18 @@
 
   <ItemGroup>
     <UpToDateCheckInput Remove="Views\Group\ServiceLog.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Product\Upload.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Product\Images.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Product\NextServices.cshtml" />
   </ItemGroup>
   
 </Project>

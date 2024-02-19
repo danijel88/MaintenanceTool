@@ -1,0 +1,18 @@
+﻿@model List<ProductImageViewModel>
+@{
+    Layout = null;
+}
+
+@if (Model.Any())
+{
+    <div>
+        @foreach (var imageName in Model)
+        {
+            <img src="@imageName.FileName" alt="@imageName" style="margin: 10px;" />
+        }
+    </div>
+}
+else
+{
+    <p>No images found.</p>
+}

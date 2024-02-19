@@ -22,7 +22,6 @@
 
   <ItemGroup>
     <Folder Include="CompanyAggregate\Specifications\" />
-    <Folder Include="ProductAggregate\Specifications\" />
   </ItemGroup>
 
 </Project>

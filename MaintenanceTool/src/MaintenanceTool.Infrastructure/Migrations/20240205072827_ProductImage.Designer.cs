@@ -4,6 +4,7 @@ using MaintenanceTool.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MaintenanceTool.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240205072827_ProductImage")]
+    partial class ProductImage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -201,23 +203,10 @@ namespace MaintenanceTool.Infrastructure.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
-                    b.Property<int>("EachMonths")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("LastService")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("DATE")
-                        .HasDefaultValue(new DateTime(2024, 2, 5, 0, 0, 0, 0, DateTimeKind.Local));
-
                     b.Property<string>("Model")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
-
-                    b.Property<DateTime>("NextService")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("DATE")
-                        .HasDefaultValue(new DateTime(2024, 2, 5, 0, 0, 0, 0, DateTimeKind.Local));
 
                     b.Property<string>("ProductName")
                         .IsRequired()
