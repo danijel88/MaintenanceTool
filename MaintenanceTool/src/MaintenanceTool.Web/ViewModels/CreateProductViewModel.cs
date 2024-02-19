@@ -12,4 +12,7 @@ public class CreateProductViewModel
 
   public string Description { get; set; }
   public int CompanyId { get; set; }
+  public int EachMonths { get; set; }
+  [DataType(DataType.Date)]
+  public DateTime LastService { get; set; }
 }

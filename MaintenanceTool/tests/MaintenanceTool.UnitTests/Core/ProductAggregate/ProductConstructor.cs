@@ -16,7 +16,7 @@ public class ProductConstructor
 
   private Product CreateProduct()
   {
-    return new Product(_testCompanyId, _testProductDescription, _testProductModel, _testProductName,_testProductSerialNumber);
+    return new Product(_testCompanyId, _testProductDescription, _testProductModel, _testProductName,_testProductSerialNumber,1,DateTime.Today);
   }
 
   [Fact]

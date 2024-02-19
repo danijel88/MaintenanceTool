@@ -19,5 +19,11 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
     builder.Property(p => p.SerialNumber)
       .HasMaxLength(50)
       .IsRequired();
+    builder.Property(p=>p.LastService)
+      .HasColumnType("DATE")
+      .HasDefaultValue(DateTime.Today);
+    builder.Property(p=>p.NextService)
+      .HasColumnType("DATE")
+      .HasDefaultValue(DateTime.Today);
   }
 }

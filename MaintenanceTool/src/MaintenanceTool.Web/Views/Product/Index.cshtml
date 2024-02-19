@@ -16,6 +16,7 @@
                 <th>Serial Number</th>
                 <th>Model</th>
                 <th>Description</th>
+                <th>Action</th>
             </tr>
             </thead>
             <tbody>
@@ -26,6 +27,10 @@
                     <td>@element.SerialNumber</td>
                     <td>@element.Model</td>
                     <td>@element.Description</td>
+                    <td>
+                        <a class="btn btn-primary" asp-controller="Product" asp-action="Upload" asp-route-productId="@element.Id">Upload Image</a>
+                        <a class="btn btn-success" asp-controller="Product" asp-action="Images" asp-route-productId="@element.Id">Pictures</a>
+                    </td>
                 </tr>
             }
             </tbody>

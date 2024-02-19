@@ -1,0 +1,70 @@
+﻿@model List<ProductsNextServiceViewModel>
+
+@{
+    ViewData["Title"] = "Next Services Page";
+}
+<div class="row">
+    <div class="col-12">
+        <table class="table table-responsive" id="example" style="width:100%">
+            <thead>
+            <tr>
+                <th>Product</th>
+                <th>Last Service</th>
+                <th>Next Service</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var element in Model)
+            {
+                <tr>
+                    <td>@element.Name</td>
+                    <td>@element.LastService.ToString("dd.MM.yyyy")</td>
+                        <td>@element.NextService.ToString("dd.MM.yyyy")</td>
+                </tr>
+            }
+
+            </tbody>
+            <tfoot>
+            <tr>
+                <th>Product</th>
+                <th>Last Service</th>
+                <th>Next Service</th>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script src="~/lib/DataTables/datatables.min.js"></script>
+    <script>
+
+        $(document).ready(function () {
+            $('#example tfoot th').each(function () {
+                var title = $(this).text();
+                $(this).html('<input type="text" placeholder="Search ' + title + '" />');
+            });
+            var table = $('#example').DataTable({
+                dom: 'Bfrtip',
+                initComplete: function () {
+                    // Apply the search
+                    this.api().columns().every(function () {
+                        var that = this;
+                        $('input', this.footer()).on('keyup change clear',
+                            function () {
+                                if (that.search() !== this.value) {
+                                    that
+                                        .search(this.value)
+                                        .draw();
+                                }
+                            });
+                    });
+                },
+                "responsive": true,
+                "lengthChange": true,
+                "autoWidth": true
+            });
+        });
+    </script>
+}
