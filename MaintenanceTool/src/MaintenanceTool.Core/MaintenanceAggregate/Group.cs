@@ -33,4 +33,14 @@ public class Group : EntityBase, IAggregateRoot
     Guard.Against.Null(serviceLog, nameof(serviceLog));
     _serviceLogs.Add(serviceLog);
   }
+
+  public GroupConfig GetById(int groupConfigId)
+  {
+    return _groupConfigs.FirstOrDefault(w => w.Id == groupConfigId);
+  }
+
+  public void RemoveGroupConfig(GroupConfig toRemove)
+  {
+    _groupConfigs.Remove(toRemove);
+  }
 }

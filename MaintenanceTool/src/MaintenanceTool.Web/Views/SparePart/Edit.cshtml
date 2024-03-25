@@ -1,0 +1,29 @@
+﻿@model EditSpareViewModel
+
+@{
+    ViewData["Title"] = "Edit Spare";
+}
+<div class="row">
+    <form method="post">
+        <div asp-validation-summary="All" />
+        <div class="mb-3">
+            <label asp-for="SparePartName">Spare part Name:</label>
+            <input asp-for="SparePartName" class="form-control" />
+            <span class="text-danger"> @Html.ValidationMessageFor(x => x.SparePartName)</span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Description">Description:</label>
+            <input asp-for="Description" class="form-control" />
+            <span class="text-danger"> @Html.ValidationMessageFor(x => x.Description)</span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="SapCode">ASM Code:</label>
+            <input asp-for="SapCode" class="form-control" />
+            <span class="text-danger"> @Html.ValidationMessageFor(x => x.SapCode)</span>
+        </div>
+        <div class="mb-3">
+            <button type="submit" class="btn btn-success">Save</button>
+        </div>
+    </form>
+</div>
+

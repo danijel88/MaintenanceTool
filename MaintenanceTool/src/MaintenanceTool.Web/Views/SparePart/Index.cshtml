@@ -10,24 +10,104 @@
     </div>
 
     <div class="col-12">
-        <table class="table table-responsive table-striped text-deeppink">
+        <table id="example" class="table table-responsive table-striped text-deeppink">
             <thead>
-            <tr>
-                <th>Spare Part Name</th>
-                <th>Description</th>
-                <th>SAP Code</th>
-            </tr>
+                <tr>
+                    <th>Spare Part Name</th>
+                    <th>Description</th>
+                    <th>SAP Code</th>
+                    <th>Action</th>
+                </tr>
             </thead>
             <tbody>
-            @foreach (var element in Model)
-            {
-                <tr>
-                    <td>@element.SparePartName</td>
-                    <td>@element.Description</td>
-                    <td>@element.SapCode</td>
-                </tr>
-            }
+                @foreach (var element in Model)
+                {
+                    <tr>
+                        <td>@element.SparePartName</td>
+                        <td>@element.Description</td>
+                        <td>@element.SapCode</td>
+                        <td>
+                            @if (User.IsInRole("Admin") || User.IsInRole("User"))
+                            {
+                                <a class="btn btn-primary" asp-controller="SparePart" asp-action="Upload" asp-route-sparePartId="@element.Id">Upload Image</a>
+                                <a class="btn btn-success" asp-controller="SparePart" asp-action="Images" asp-route-sparePartId="@element.Id">Pictures</a>
+                                <a asp-action="Edit" asp-route-id="@element.Id" class="btn btn-warning">Edit</a>
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="setModalContent(@element.Id, '@element.SparePartName')">
+                                    Add Stock
+                                </button>
+                            }
+                        </td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>
 </div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="sparePartNameTitle"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" id="addStockForm" asp-controller="Inventory" asp-action="AddStock">
+                    <div class="mb-3">
+                        <input type="hidden" id="sparePartId" name="sparePartId" />
+                        <input type="hidden" id="companyId" name="companyId" value="@ViewBag.CompanyId" />
+                        <input type="text" id="quantity" step="0.01" name="quantity" class="form-control" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" onclick="submitForm()" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts
+{
+    <script src="~/lib/DataTables/datatables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#example tfoot th').each(function () {
+                var title = $(this).text();
+                $(this).html('< input type = "text" placeholder = "Search ' + title + '" /> ');
+                    });
+            var table = $('#example').DataTable({
+                dom: 'Bfrtip',
+                initComplete: function () {
+                    // Apply the search
+                    this.api().columns().every(function () {
+                        var that = this;
+                        $('input', this.footer()).on('keyup change clear',
+                            function () {
+                                if (that.search() !== this.value) {
+                                    that
+                                        .search(this.value)
+                                        .draw();
+                                }
+                            });
+                    });
+                },
+                "responsive": false,
+                "lengthChange": true,
+                "autoWidth": true
+            });
+        });
+
+        function setModalContent(id, name) {
+            // Set the value of the hidden input
+            document.getElementById('sparePartId').value = id;
+            // Set the title of the modal
+            document.getElementById('sparePartNameTitle').textContent = 'Add stock for : ' + name;
+        }
+        function submitForm() {
+            document.getElementById('addStockForm').submit();
+        }
+    </script>
+}

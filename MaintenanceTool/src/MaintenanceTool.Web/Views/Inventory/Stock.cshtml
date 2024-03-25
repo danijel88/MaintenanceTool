@@ -1,0 +1,65 @@
+﻿@model List<InventoryListViewModel>
+
+@{
+    ViewData["Title"] = "Inventory Stock";
+}
+
+<div class="row">
+    <div class="col-xl-12 col-md-12 col-sm-3">
+        <table id="stock" class="table table-responsive table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>SparePart</th>
+                    <th>Balance</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var element in Model)
+                {
+                    <tr>
+                        <td>@element.SparePart</td>
+                        <td>@element.Balance</td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>SparePart</th>
+                    <th>Balance</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+@section Scripts
+{
+    <script src="~/lib/DataTables/datatables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#stock tfoot th').each(function () {
+                var title = $(this).text();
+                $(this).html('<input type="text" placeholder="Search ' + title + '" />');
+            });
+            var table = $('#stock').DataTable({
+                dom: 'Bfrtip',
+                initComplete: function () {
+                    // Apply the search
+                    this.api().columns().every(function () {
+                        var that = this;
+                        $('input', this.footer()).on('keyup change clear',
+                            function () {
+                                if (that.search() !== this.value) {
+                                    that
+                                        .search(this.value)
+                                        .draw();
+                                }
+                            });
+                    });
+                },
+                "responsive": false,
+                "lengthChange": true,
+                "autoWidth": true
+            });
+        });
+    </script>
+}

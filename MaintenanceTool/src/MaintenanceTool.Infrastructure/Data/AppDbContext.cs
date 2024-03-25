@@ -6,10 +6,11 @@ using MaintenanceTool.Core.ProductAggregate;
 using MaintenanceTool.Core.ProjectAggregate;
 using MaintenanceTool.SharedKernel;
 using MaintenanceTool.SharedKernel.Interfaces;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace MaintenanceTool.Infrastructure.Data;
-public class AppDbContext : DbContext
+public class AppDbContext : IdentityDbContext
 {
   private readonly IDomainEventDispatcher? _dispatcher;
 
@@ -26,7 +27,7 @@ public class AppDbContext : DbContext
   public DbSet<SparePart> SpareParts => Set<SparePart>();
   public DbSet<Transaction> Transactions => Set<Transaction>();
   public DbSet<Group> Groups => Set<Group>();
-
+  public DbSet<Inventory> Inventories => Set<Inventory>();
   public DbSet<ToDoItem> ToDoItems => Set<ToDoItem>();
   public DbSet<Project> Projects => Set<Project>();
 

@@ -1,0 +1,20 @@
+﻿@model List<SparePartImageViewModel>
+
+@if (Model.Any())
+{
+    <div class="row">
+        @foreach (var imageName in Model)
+        {
+
+            <div class="col-lg-3 col-md-4 col-sm-6">
+                <a href="@imageName.FileName">
+                    <img src="@imageName.FileName" class="img-thumbnail" width="600" height="450" />
+                </a>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <p>No images found.</p>
+}

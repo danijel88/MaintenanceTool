@@ -5,10 +5,14 @@ using MaintenanceTool.Core;
 using MaintenanceTool.Infrastructure;
 using MaintenanceTool.Infrastructure.Data;
 using MaintenanceTool.Web;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
@@ -26,6 +30,14 @@ var connectionString =
 
 builder.Services.AddDbContext(connectionString);
 
+builder.Services.AddIdentity<IdentityUser,IdentityRole>()
+    .AddEntityFrameworkStores<AppDbContext>();
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+  .AddCookie(options =>
+  {
+    options.LoginPath = "/Identity/Account/Login"; // Customize the login page path
+    options.AccessDeniedPath = "/Error/Forbidden"; // Customize the access denied page path
+  });
 builder.Services.AddControllersWithViews().AddNewtonsoftJson();
 builder.Services.AddRazorPages();
 
@@ -67,8 +79,10 @@ else
   app.UseHsts();
 }
 
+app.UseStatusCodePagesWithReExecute("/Error/Forbidden");
 app.UseRouting();
-
+app.UseAuthentication();
+app.UseAuthorization();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseCookiePolicy();
@@ -94,8 +108,8 @@ using (var scope = app.Services.CreateScope())
   {
     var context = services.GetRequiredService<AppDbContext>();
     //                    context.Database.Migrate();
+
     context.Database.EnsureCreated();
-    SeedData.Initialize(services);
   }
   catch (Exception ex)
   {
@@ -103,5 +117,6 @@ using (var scope = app.Services.CreateScope())
     logger.LogError(ex, "An error occurred seeding the DB. {exceptionMessage}", ex.Message);
   }
 }
+app.UseAuthentication(); ;
 
 app.Run();

@@ -16,8 +16,13 @@
     <PackageReference Include="Ardalis.Result" />
     <PackageReference Include="Ardalis.Result.AspNetCore" />
     <PackageReference Include="MediatR" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" PrivateAssets="All" />
     <PackageReference Include="Serilog.Sinks.ApplicationInsights" />
     <PackageReference Include="Swashbuckle.AspNetCore" />
@@ -34,19 +39,27 @@
   </ItemGroup>
 
   <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\Account\Create.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Account\Login.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Company\Create.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Error\Forbidden.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Group\Details.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Group\Edit.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Group\ServiceLog.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Inventory\Stock.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Product\Create.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Product\Edit.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Product\Images.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Product\NextServices.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Product\Upload.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\SparePart\Edit.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\SparePart\Images.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\SparePart\Upload.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Transaction\Create.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Transaction\Details.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\SparePart\" />
     <Folder Include="Views\Plant\" />
   </ItemGroup>
 
@@ -80,6 +93,42 @@
 
   <ItemGroup>
     <UpToDateCheckInput Remove="Views\Product\NextServices.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Product\Edit.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\SparePart\Edit.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Group\Edit.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Account\Create.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Error\Forbidden.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Account\Login.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Inventory\Stock.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\SparePart\Upload.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\SparePart\Images.cshtml" />
   </ItemGroup>
   
 </Project>

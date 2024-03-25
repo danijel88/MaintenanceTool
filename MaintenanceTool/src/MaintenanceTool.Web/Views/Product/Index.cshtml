@@ -9,7 +9,7 @@
     </div>
 
     <div class="col-12">
-        <table class="table table-responsive table-striped text-deeppink">
+        <table id="productTable" class="table table-responsive table-striped">
             <thead>
             <tr>
                 <th>Product Name</th>
@@ -19,6 +19,15 @@
                 <th>Action</th>
             </tr>
             </thead>
+            <tfoot>
+            <tr>
+                <th>Product Name</th>
+                <th>Serial Number</th>
+                <th>Model</th>
+                <th>Description</th>
+                <th>Action</th>
+            </tr>
+            </tfoot>
             <tbody>
             @foreach (var element in Model)
             {
@@ -30,6 +39,7 @@
                     <td>
                         <a class="btn btn-primary" asp-controller="Product" asp-action="Upload" asp-route-productId="@element.Id">Upload Image</a>
                         <a class="btn btn-success" asp-controller="Product" asp-action="Images" asp-route-productId="@element.Id">Pictures</a>
+                        <a class="btn btn-secondary" asp-controller="Product" asp-action="Edit" asp-route-id="@element.Id">Edit</a>
                     </td>
                 </tr>
             }
@@ -37,3 +47,32 @@
         </table>
     </div>
 </div>
+@section Scripts
+{
+    <script src="~/lib/DataTables/datatables.min.js"></script>
+    <script>
+
+        $(document).ready(function () {
+            $('#productTable tfoot th').each(function () {
+                var title = $(this).text();
+                $(this).html('<input type="text" placeholder="Search ' + title + '" />');
+            });
+            var table = $('#productTable').DataTable({
+                initComplete: function () {
+                    // Apply the search
+                    this.api().columns().every(function () {
+                        var that = this;
+                        $('input', this.footer()).on('keyup change clear',
+                            function () {
+                                if (that.search() !== this.value) {
+                                    that
+                                        .search(this.value)
+                                        .draw();
+                                }
+                            });
+                    });
+                }
+            });
+        });
+    </script>
+}

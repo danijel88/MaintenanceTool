@@ -87,7 +87,29 @@
 
             div.appendChild(select2);
 
+            var label3 = document.createElement('label');
+            label3.textContent = 'Quantity';
+            div.appendChild(label3);
 
+            var inputElement = document.createElement('input');
+            inputElement.name = 'DetailTransactions[' + index + '].Qty';
+            inputElement.id = 'DetailTransactions[' + index + '].Qty';
+            inputElement.className = 'form-control';
+            div.appendChild(inputElement);
+
+
+            var label4 = document.createElement('label');
+            label4.textContent = 'Move Service';
+            div.appendChild(label4);
+
+            var checkBoxElement = document.createElement('INPUT');
+            checkBoxElement.setAttribute("type", "checkbox");
+            checkBoxElement.name = 'DetailTransactions[' + index + '].moveService';
+            checkBoxElement.id = 'DetailTransactions[' + index + '].moveService';
+            checkBoxElement.className = 'form-check-input';
+            div.appendChild(checkBoxElement);
+            var newLineElement = document.createElement('br');
+            div.appendChild(newLineElement);
             var button = document.createElement('button');
             button.type = 'button';
             button.textContent = 'Remove';
@@ -124,8 +146,6 @@
 
                 }
             });
-
-
         }
         function saveData() {
             var container = document.getElementById('groupConfigContainer');
@@ -145,18 +165,18 @@
             };
 
             for (var i = 0; i < container.children.length; i++) {
-                var productSelect = container.children[i].querySelector('[name$=".ProductId"]');
-                var sparePartSelect = container.children[i].querySelector('[name$=".Id"]');
-
+                var groupConfigSelector = container.children[i].querySelector('[name$=".Id"]');
+                var quantity = container.children[i].querySelector('[name$=".Qty"]');
+                var moveService = container.children[i].querySelector('[name$=".moveService"]');
                 formData.DetailTransactions.push({
-                    GroupConfigId: sparePartSelect.value,
-                    Quantity: 1
+                    GroupConfigId: groupConfigSelector.value,
+                    Quantity: quantity.value,
+                    MoveService: moveService.value
                 });
             }
-
+            console.log(formData);
             // Get anti-forgery token from the form
             var token = $('input[name="__RequestVerificationToken"]').val();
-
             // Perform AJAX post with anti-forgery token in headers
             $.ajax({
                 url: '/Transaction/' + plantId + '/Create/' + groupId,  // Update the URL accordingly

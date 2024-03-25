@@ -2,6 +2,7 @@
 using MaintenanceTool.Core.ProjectAggregate;
 using MaintenanceTool.Infrastructure.Data;
 using MaintenanceTool.SharedKernel.Interfaces;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;

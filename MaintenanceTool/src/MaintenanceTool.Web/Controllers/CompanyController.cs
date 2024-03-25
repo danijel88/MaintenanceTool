@@ -2,11 +2,13 @@
 using MaintenanceTool.SharedKernel.Interfaces;
 using MaintenanceTool.Web.Extensions;
 using MaintenanceTool.Web.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MaintenanceTool.Web.Controllers;
 
 [Route("[controller]")]
+[Authorize(Roles = "Admin")]
 public class CompanyController : Controller
 {
   private readonly IRepository<Company> _companyRepository;

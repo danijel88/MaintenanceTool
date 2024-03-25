@@ -2,10 +2,12 @@
 
 public class SparePartViewModel : CreateSparePartViewModel
 {
-  public SparePartViewModel(string description, string sapCode, string sparePartName)
+  public int Id { get; private set; }
+  public SparePartViewModel(string description, string sapCode, string sparePartName, int id)
   {
     Description = description;
     SapCode = sapCode;
     SparePartName = sparePartName;
+    Id = id;
   }
 }

@@ -5,38 +5,48 @@ using MaintenanceTool.Core.InventoryAggregate;
 using MaintenanceTool.Core.InventoryAggregate.Specifications;
 using MaintenanceTool.Core.MaintenanceAggregate;
 using MaintenanceTool.Core.MaintenanceAggregate.Specifications;
+using MaintenanceTool.Core.ProductAggregate;
 using MaintenanceTool.SharedKernel.Interfaces;
 using MaintenanceTool.Web.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace MaintenanceTool.Web.Controllers;
 
 [Route("[controller]")]
+
 public class TransactionController : Controller
 {
   private readonly IRepository<Group> _groupRepository;
   private readonly IGroupConfigSearchService _searchService;
+  private readonly IRepository<Inventory> _inventoryRepository;
+  private readonly IRepository<Product> _productRepository;
   private readonly IRepository<Transaction> _transactionRepository;
 
 
   public TransactionController(IRepository<Transaction> transactionRepository
     , IRepository<Group> groupRepository
-    , IGroupConfigSearchService searchService)
+    , IGroupConfigSearchService searchService
+    , IRepository<Inventory> inventoryRepository
+    ,IRepository<Product> productRepository)
   {
     _transactionRepository = transactionRepository;
     _groupRepository = groupRepository;
     _searchService = searchService;
+    _inventoryRepository = inventoryRepository;
+    _productRepository = productRepository;
   }
 
   [HttpGet("{plantId}/Create/{groupId}")]
+  [Authorize(Roles = "Admin,User")]
   public async Task<IActionResult> Create(int groupId, int plantId)
   {
     var response = await InitializedCreate(groupId, plantId);
     return View(response);
   }
 
-
+  [Authorize(Roles = "Admin,User")]
   [HttpPost("{plantId}/Create/{groupId}")]
   [AutoValidateAntiforgeryToken]
   public async Task<IActionResult> Create(int groupId, int plantId, [FromBody] CreateTransactionViewModel model)
@@ -56,8 +66,17 @@ public class TransactionController : Controller
     var request = new List<Transaction>();
     foreach (var element in model.DetailTransactions)
     {
-      request.Add(new Transaction(model.CreatedDate, model.DoneBy, mt, plantId, element.GroupConfigId, element.Quantity,
+      request.Add(new Transaction(model.CreatedDate, model.DoneBy, mt, plantId, element.GroupConfigId, -element.Quantity,
         TransactionType.Consume,model.Description));
+      var group = await _groupRepository.FirstOrDefaultAsync(new GroupByIdWithGroupConfigsDetailsSpec(groupId));
+      var config = group.GroupConfigs.FirstOrDefault(w => w.Id == element.GroupConfigId);
+      await _inventoryRepository.AddAsync(new Inventory(DateTime.Now, User.Identity.Name, -element.Quantity, config.SparePartId));
+      if (element.MoveService == "on" || element.MoveService == "true")
+      {
+        var product = await _productRepository.GetByIdAsync(config.ProductId);
+        product.UpdateLastService(model.CreatedDate);
+        await _productRepository.UpdateAsync(product);
+      }
     }
 
     if (request.Count > 0)
@@ -95,7 +114,7 @@ public class TransactionController : Controller
   {
     var spec = new ListOfTransactionsByGroupIdSpec(groupId, plantId);
     var response = (await _transactionRepository.ListAsync(spec))
-      .Select(s=> new TransactionDetailsViewModel(s.DoneBy,s.CreatedDate.Date,s.MaintenanceType.ToString("G"),s.GroupConfig.Product.DisplayedName,s.GroupConfig.SparePart.DisplayedName))
+      .Select(s=> new TransactionDetailsViewModel(s.DoneBy,s.CreatedDate.Date,s.MaintenanceType.ToString("G"),s.GroupConfig.Product.DisplayedName,s.GroupConfig.SparePart.DisplayedName,s.Description))
       .ToList();
     return View(response);
   }

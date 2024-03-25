@@ -3,12 +3,14 @@ using MaintenanceTool.Core.ProductAggregate.Specifications;
 using MaintenanceTool.SharedKernel.Interfaces;
 using MaintenanceTool.Web.Extensions;
 using MaintenanceTool.Web.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MaintenanceTool.Web.Controllers;
 
 [Route("[controller]")]
+
 public class ProductController : Controller
 {
   private readonly IRepository<Product> _productRepository;
@@ -36,12 +38,14 @@ public class ProductController : Controller
     return View(products);
   }
 
+  [Authorize(Roles = "Admin,User")]
   [HttpGet("{companyId}/Create")]
   public IActionResult Create(int companyId)
   {
     return View();
   }
 
+  [Authorize(Roles = "Admin,User")]
   [HttpPost("{companyId}/Create")]
   public async Task<IActionResult> Create(int companyId, CreateProductViewModel request)
   {
@@ -65,6 +69,7 @@ public class ProductController : Controller
     return RedirectToAction("Index", new { companyId });
   }
 
+  [Authorize(Roles = "Admin,User")]
   [HttpGet("{productId}/Upload")]
   public IActionResult Upload(int productId)
   {
@@ -142,5 +147,38 @@ public class ProductController : Controller
       })
       .ToList();
     return View(product);
+  }
+
+  [Authorize(Roles = "Admin,User")]
+  [HttpGet("{id}/Edit")]
+  public async Task<IActionResult> Edit(int id)
+  {
+    var product = await _productRepository.GetByIdAsync(id);
+    EditProductViewModel response = new EditProductViewModel();
+    response.Id = product.Id;
+    response.ProductName = product.ProductName;
+    response.Model = product.Model;
+    response.Description = product.Description;
+    response.SerialNumber = product.SerialNumber;
+    response.CompanyId = product.CompanyId;
+    response.EachMonths = product.EachMonths;
+    return View(response);
+  }
+  [Authorize(Roles = "Admin,User")]
+  [HttpPost("{id}/Edit")]
+  [AutoValidateAntiforgeryToken]
+  public async Task<IActionResult> Edit(int id,EditProductViewModel request)
+  {
+    var product = await _productRepository.GetByIdAsync(id);
+    product.SetModel(request.Model);
+    product.SetDescription(request.Description);
+    product.SetName(request.ProductName);
+    product.SetSerialNumber(request.SerialNumber);
+    product.SetEachMonths(request.EachMonths);
+    product.UpdateLastService(product.LastService);
+    await _productRepository.UpdateAsync(product);
+    await _productRepository.SaveChangesAsync();
+    return RedirectToAction("Index", new { companyId = product.CompanyId });
+
   }
 }

@@ -4,10 +4,15 @@
     ViewData["Title"] = "Group Details Page";
 }
 <div class="row">
-    <div class="col-12">
-        <a class="btn btn-warning" asp-controller="Transaction" asp-action="Create" asp-route-plantId="@ViewBag.PlantId" asp-route-groupId="@ViewBag.GroupId">Create Service</a>
+    <div class="col-12 mb-2">
+        @if (User.IsInRole("Admin") || User.IsInRole("User"))
+        {
+            <a class="btn btn-warning" asp-controller="Transaction" asp-action="Create" asp-route-plantId="@ViewBag.PlantId" asp-route-groupId="@ViewBag.GroupId">Create Service</a>
+            <a class="btn btn-success" asp-controller="Group" asp-action="Edit" asp-route-plantId="@ViewBag.PlantId" asp-route-groupId="@ViewBag.GroupId"> Add New Component </a>
+        }
+
         <a class="btn btn-info" asp-controller="Transaction" asp-action="Details" asp-route-groupId="@ViewBag.GroupId" asp-route-plantId="@ViewBag.PlantId">List of Services</a>
-        <a class="btn btn-primary" asp-controller="Group" asp-action="ServiceLog" asp-route-id="@ViewBag.GroupId" >List of Service Logs</a>
+        <a class="btn btn-primary" asp-controller="Group" asp-action="ServiceLog" asp-route-id="@ViewBag.GroupId">List of Service Logs</a>
 
     </div>
     <hr/>
@@ -16,6 +21,7 @@
             <tr>
                 <th>Product</th>
                 <th>SparePart</th>
+                <th>Action</th>
             </tr>
             @foreach (var groupDetails in Model)
             {
@@ -27,9 +33,65 @@
                         </td>
                     }
                     <td>@groupDetails.SparePart</td>
+                    <td>
+                        @if (User.IsInRole("Admin") || User.IsInRole("User"))
+                        {
+                            <button type="button" class="delete-btn" data-bs-toggle="modal" data-bs-target="#exampleModal" data-group-config-id="@groupDetails.GroupConfigId">
+                                <i class="fa fa-trash alert alert-danger"></i>
+                            </button>
+                        }
+
+                    </td>
+    
                 </tr>
             }
         </table>
     </div>
-
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Delete Confirmation</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete this item?</p>
+                    <p>All services will be also deleted</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" id="confirmDelete">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+@section Scripts{
+    <script>
+        $('#exampleModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            var groupConfigId = button.data('group-config-id'); // Extract info from data-* attributes
+            var modal = $(this);
+            modal.find('#confirmDelete').data('group-config-id', groupConfigId); // Pass the value to the delete button in modal footer
+        });
+
+        $('#confirmDelete').click(function () {
+            var groupConfigId = $(this).data('group-config-id');
+            // Retrieve the groupConfigId from the delete button
+            // Now you can use this groupConfigId to perform the delete operation
+            // For example, you can make an AJAX call to delete the item
+            $.ajax({
+                url: '/Group/' + @ViewBag.GroupId + '/Delete/' + groupConfigId,
+                type: 'POST',
+                success: function (response) {
+                    $('#exampleModal').modal('hide'); // Close the modal
+                    location.reload(); // Reload the page
+                },
+                error: function (xhr, status, error) {
+                    console.log(error);
+                }
+            });
+        });
+    </script>
+}

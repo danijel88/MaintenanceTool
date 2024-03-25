@@ -266,3 +266,13 @@ Loader
 .l2 div, .l3 div {
     animation: rot2 3s ease 0s infinite;
 }
+/*
+    End
+*/
+/*Login container*/
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
