@@ -26,7 +26,7 @@ builder.Services.Configure<CookiePolicyOptions>(options =>
 
 var connectionString =
   builder.Configuration
-    .GetConnectionString("DefaultConnection"); //Configuration.GetConnectionString("SqliteConnection");
+    .GetConnectionString("SqliteConnection"); //Configuration.GetConnectionString("SqliteConnection");
 
 builder.Services.AddDbContext(connectionString);
 
@@ -106,9 +106,7 @@ using (var scope = app.Services.CreateScope())
 
   try
   {
-    var context = services.GetRequiredService<AppDbContext>();
-    //                    context.Database.Migrate();
-
+    var context = services.GetRequiredService<AppDbContext>(); 
     context.Database.EnsureCreated();
   }
   catch (Exception ex)
